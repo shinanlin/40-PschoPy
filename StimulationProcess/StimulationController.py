@@ -1,6 +1,6 @@
 import sys
 sys.path.append('.././EventControl')
-from StimulationProcess.InitialProcess import InitialProcess
+from StimulationProcess.IdleProcess import IdleProcess
 from StimulationProcess.PrePareProcess import PrepareProcess
 from StimulationProcess.StimulateProcess import StimulateProcess
 from StimulationProcess.FinishProcess import FinishProcess
@@ -11,45 +11,66 @@ import datetime
 class StimulationController:
     def __init__(self):
 
-        self.initial_process = None
-        self.prepare_process = None
-        self.stimulate_process = None
-        self.finish_process = None
-        self.current_process = None
-        self.cue_id = None
-        self.end = False
+        self.initialProcess = None
+        self.prepareProcess = None
+        self.stimulateProcess = None
+        self.idleProcess = None
+        self.finishProcess = None
+        self.currentProcess = None
 
-    def initial(self, view_struct):
+        # 显示界面
+        self.win = None
+
+        self.endBlock = False
+        self.endSession = None
+
+        # 当前epoch的cue
+        self.cueId = None
+        # 当前block的提示编号
+        self.blockCues = None
+        # 当前block提示字符
+        self.blockCueText = None
+        # 当前epoch的编号
+        self.currentEpochINX = 0
+        # 当前block内epoch的编号
+        self.epochThisBlock = 0
+        # 当前block的编号
+        self.currentBlockINX = 0
+        # 当前epoch的结果（由operation返回）
+        self.currentResult = None
+        # 用户打字的字符框反馈
+        self.feedback = None
+        # 字符映射
+
+
+    def initial(self, viewContainer):
 
         # trigger 控制器
         # self.eventController = EventController()
 
         # 开始
-        self.initial_process = InitialProcess()
-        self.initial_process.initial(self, view_struct)
+        self.idleProcess = IdleProcess()
+        self.idleProcess.initial(self, viewContainer)
         
         # 准备阶段：展示cue，展示上次结果
-        self.prepare_process = PrepareProcess()
-        self.prepare_process.initial(self, view_struct)
+        self.prepareProcess = PrepareProcess()
+        self.prepareProcess.initial(self, viewContainer)
 
         # 开始刺激：刺激时展示cue
-        self.stimulate_process = StimulateProcess()
-        self.stimulate_process.initial(self, view_struct)
+        self.stimulateProcess = StimulateProcess()
+        self.stimulateProcess.initial(self, viewContainer)
 
         # 结束刺激：展示结果？
         
-        self.finish_process = FinishProcess()
-        self.finish_process.initial(self, view_struct)
+        self.finishProcess = FinishProcess()
+        self.finishProcess.initial(self, viewContainer)
 
-        self.current_process = self.initial_process
+        self.currentProcess = self.idleProcess
 
     def change(self):
-        
-        self.current_process.change()
-        
+        self.currentProcess.change()
 
     def run(self):
-        print('\n开始进入{0}呈现阶段，执行时间{1}\n'.format(self.__class__.__name__, datetime.datetime.now()))
-        self.current_process.run()
+        self.currentProcess.run()
 
-        
+

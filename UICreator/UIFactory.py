@@ -14,7 +14,7 @@ class frameLoader():
         self.initFrame = None
         self.frameSet = None
         self.rectSet = None
-        self.string_positions = None
+        self.stringPositions = None
         pass
 
 def fig2data(f):
@@ -54,12 +54,11 @@ class UIFactory:
 
         self.frequency = config.frequency
         self.phase = config.phase
-        self.charSet = config.displayChar
+        self.charSet = config.char
 
         self.cubicSize = config.cubicSize
         self.interval = config.interval
-        self.initWidth = config.initWidth
-        self.initHeight = config.initHeight
+        self.initWidth, self.initHeight = config.trim
 
         self.saveFolder = os.path.join(os.getcwd(), config.saveAdd, config.paradigm)
         if os.path.exists(self.saveFolder) is False:
@@ -90,7 +89,7 @@ class UIFactory:
         for N in tqdm(range(self.maxFrames+1)):
             # 从此循环进入每一帧
 
-            f = plt.figure(figsize=(19.20, 10.80), facecolor='k', dpi=100)
+            f = plt.figure(figsize=(self.x_resolution/100, self.y_resolution/100), facecolor='none', dpi=100)
             plt.xlim(0, 1)
             plt.ylim(0, 1)
             plt.gca().xaxis.set_major_locator(plt.NullLocator())
@@ -126,12 +125,17 @@ class UIFactory:
             frameSet.append(fig2data(f))
             plt.close(f)
 
+        # 聊天框
+        init_x = self.initWidth
+        init_y = self.initHeight+self.rowNUM*(self.cubicSize+self.interval)-20
+        stringPositions = [(init_x-self.x_resolution//2+320),
+                           (init_y-self.x_resolution//2-10)]
         
         frames = frameLoader()
         frames.initFrame = frameSet.pop(0)
         frames.frameSet = frameSet
         frames.rectSet = rectSet
-        # frames.string_positions = string_positions
+        frames.stringPositions = stringPositions
 
         return frames
 
@@ -144,9 +148,8 @@ class UIFactory:
         initFrame = frames.initFrame
         plt.imsave(self.saveFolder+os.sep+'initial_frame.png', initFrame)
 
-        rectSet = frames.rectSet
         with open(self.saveFolder+os.sep+'STI.pickle', "wb+") as fp:
-            pickle.dump(rectSet, fp, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(frames, fp, protocol=pickle.HIGHEST_PROTOCOL)
 
         
 

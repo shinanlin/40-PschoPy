@@ -1,5 +1,7 @@
 import time
 from StimulationProcess.BasicStimulationProcess import BasicStimulationProcess
+from psychopy.visual.circle import Circle
+
 
 
 
@@ -8,20 +10,37 @@ class PrepareProcess(BasicStimulationProcess):
         super().__init__()
 
 
-        
-    def update(self):
-
-        # 这里应该拿到下一trial的cue是什么
-        pass
 
     def change(self):
 
-
         # prepare --> stimulate
-        self.controller.current_process = self.controller.stimulate_process
+        self.controller.currentProcess = self.controller.stimulateProcess
 
     def run(self):
-        
-        self.update()
+        # pop a cue
+        self.controller.cueId = self.controller.blockCues.pop(0)
+        self.controller.w = self._showCue(self.controller.cueId)
 
 
+    def _showCue(self, id):
+        """
+        draw initial texture and show result
+        :return: None
+        """
+
+        # 绘制初始帧
+        self.initFrame.draw()
+
+        # 绘制识别结果提示框 用tuple
+        pos = self.targetPos[id].position
+        x, y = pos
+        y = y-90
+        circle = Circle(win=self.w, pos=[x, y], radius=5)
+        circle.colorSpace = 'rgb255'
+        circle.color = (255, 0, 0)
+        circle.draw()
+
+        self.w.flip(False)
+        time.sleep(0.5)
+
+        return self.w

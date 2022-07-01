@@ -2,54 +2,69 @@ from StimulationProcess.BasicStimulationProcess import BasicStimulationProcess
 from psychopy import visual, core, event
 from EventController import EventController
 import datetime
-import matplotlib.pyplot as plt
 from psychopy import logging
 
 class StimulateProcess(BasicStimulationProcess):
     def __init__(self) -> None:
         super().__init__()
         
+    def update(self):
+        self.dialogue = self.controller.dialogue
+        self.controller.endBlock = self._checkBlock()
+
+        self.w.flip()
+        self.initFrame.draw()
+        # self.dialogue.draw()
+
+        feedback = self.controller.feedback
+        if feedback is not None:
+            feedback.draw()
+
+        # 增加另一个epoch
+        self.controller.currentEpochINX += 1
+        # 增加另一个epoch
+        self.controller.epochThisBlock += 1
+        pass
 
     def change(self):
         # stimulate --> finish
-        self.controller.current_process = self.controller.finish_process
+        self.controller.currentProcess = self.controller.finishProcess
 
 
     def run(self):
         
-        self.w.flip()
+        controller = self.controller
+        self.w = controller.w
+
         # 发送trigger
 
         # self.eventController.sendEvent(self.controller.cue_id+1)
 
         # 这一步是为了记录每一帧的时间，用来检查是否掉帧
-        self.w.recordFrameIntervals = True
-        self.w.refreshThreshold = 0.001+1/60
-        logging.console.setLevel(logging.WARNING)
+        frameINX = 0
 
-        inx = 0
-        while inx<30:
-            self.frameSet[inx].draw()
-            self.w.flip(False)
-            inx += 1
-    
+        startTime = core.getTime()
 
-        print('Overall trial dropped %i frames'%self.w.nDroppedFrames)
-        self.w.frameIntervals = []
-        self.w.recordFrameIntervals = False
+        while frameINX < len(self.frameSet):
+        
+            # if frameINX == 0:
+                # self.eventController.sendEvent(self.controller.cueId+1)
+                
+            self.frameSet[frameINX].draw()
+            self.w.flip(clearBuffer=False)
+            frameINX += 1
+            # if frameINX == len(self.frameSet):
+            #     frameINX = 0
+
+        self.update()
         # self.eventController.clearEvent()
 
 
+    def _checkBlock(self):
+    
+        if self.controller.blockCues == []:
+            self.controller.currentBlockINX += 1
+            return True
+        else:
+            return False
 
-
-
-    def check_key_board(self):
-        for i in event.getKeys():
-            if i == 'escape':
-                self.w.close()
-                core.quit()
-                raise Exception("SSVEPExperiment: UserInterrupt", '用户中断实验')
-                
-            elif i == 'delete':
-                #message = ToOperationSendingExchangeMessage.ClearResultOperation
-                print('\nStimulateProcess发送清空结果显示指令，执行时间{}\n'.format(datetime.datetime.now()))

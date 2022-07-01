@@ -10,7 +10,7 @@ import pickle
 
 class viewContainer():
     # container 应该包含所有刺激所需的要素
-    def __init__(self) -> None:
+    def __init__(self,config) -> None:
 
         # w 代表window,所有的刺激都要在win上显示
         self.w = None
@@ -24,18 +24,30 @@ class viewContainer():
         self.targetPos = None
         # stringPos是在线实验时候,字符的位置,暂时用不到
         self.stringPos = None
+
         
+        self.takeConfig(config)
+        pass
+
+    def takeConfig(self,config):
+
+        self.cue = config.cue
+        self.targetNUM = config.targetNUM
+        self.blockNUM = config.blockNUM
+        self.displayChar = config.displayChar
+        self.resolution = config.resolution
+
         pass
 
 
 class Stimulator():
 
-    def __init__(self,addSTI) -> None:
+    def __init__(self,config) -> None:
 
-        self.addSTI = addSTI
+        self.addSTI = config.addSTI
 
         # viewContainer 用来装载刺激呈现的要素
-        self.viewContainer = viewContainer()
+        self.viewContainer = viewContainer(config)
         # controller 用来控制刺激呈现
 
         self.controller = StimulationController()
@@ -45,29 +57,32 @@ class Stimulator():
 
     def loadPics(self):
 
-        win = visual.Window([1920, 1080], monitor="testMonitor", units="pix", fullscr=True,waitBlanking=True, color=(0, 0, 0), colorSpace='rgb255', screen=0,allowGUI=True)
+        xScreen,yScreen = self.viewContainer.resolution
+
+        win = visual.Window([xScreen, yScreen], monitor="testMonitor", units="pix", fullscr=True,waitBlanking=True, color=(0, 0, 0), colorSpace='rgb255', screen=0,allowGUI=True)
         # win.close()
         picAdd = os.listdir(self.addSTI)
         frameSet = []
         # initial frame
         add = self.addSTI + os.sep + 'initial_frame.png'
-        initFrame = visual.ImageStim(win, image=add, pos=[0, 0], size=[
-                                    1920, 1080], units='pix', flipVert=False)
+        initFrame = visual.ImageStim(win, image=add, pos=[0, 0], size=[xScreen, yScreen], units='pix', flipVert=False)
 
         # stimulation frames
 
         for picINX in tqdm(range(len(picAdd)-2)):
             add = self.addSTI + os.sep + '%i.png' % picINX
-            frame = visual.ImageStim(win, image=add, pos=[0, 0], size=[
-                                        1920, 1080], units='pix', flipVert=False)
+            frame = visual.ImageStim(win, image=add, pos=[0, 0], size=[xScreen, yScreen], units='pix', flipVert=False)
             frameSet.append(frame)
 
         self.viewContainer.w = win
         self.viewContainer.frameSet = frameSet
         self.viewContainer.initFrame = initFrame        
 
-        with open(addSTI+os.sep+'STI.pickle', "rb") as fp:
-            self.viewContainer.targetPos = pickle.load(fp)
+        with open(self.addSTI+os.sep+'STI.pickle', "rb") as fp:
+            pos = pickle.load(fp)
+        
+        self.viewContainer.targetPos = pos.rectSet
+        self.viewContainer.stringPos = pos.stringPositions
 
         return self
 
