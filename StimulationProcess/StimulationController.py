@@ -3,6 +3,7 @@ sys.path.append('.././EventControl')
 from StimulationProcess.InitialProcess import InitialProcess
 from StimulationProcess.PrePareProcess import PrepareProcess
 from StimulationProcess.StimulateProcess import StimulateProcess
+from StimulationProcess.RestProcess import RestProcess
 from StimulationProcess.FinishProcess import FinishProcess
 from EventController import EventController
 
@@ -17,6 +18,7 @@ class StimulationController:
         self.finish_process = None
         self.current_process = None
         self.cue_id = None
+        self.currenttrialINX = 0
         self.end = False
 
     def initial(self, view_struct):
@@ -24,18 +26,22 @@ class StimulationController:
         # trigger 控制器
         # self.eventController = EventController()
 
-        # 开始
+        # 开始 
         self.initial_process = InitialProcess()
         self.initial_process.initial(self, view_struct)
         
-        # 准备阶段：展示cue，展示上次结果
+        # 准备阶段：展示cue
         self.prepare_process = PrepareProcess()
         self.prepare_process.initial(self, view_struct)
 
         # 开始刺激：刺激时展示cue
         self.stimulate_process = StimulateProcess()
         self.stimulate_process.initial(self, view_struct)
-
+        
+        # 休息阶段
+        self.rest_process = RestProcess()
+        self.rest_process.initial(self, view_struct)
+        
         # 结束刺激：展示结果？
         
         self.finish_process = FinishProcess()

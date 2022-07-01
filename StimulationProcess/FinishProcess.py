@@ -11,12 +11,18 @@ class FinishProcess(BasicStimulationProcess):
         super().__init__()
     
     def change(self):
-        
+         
         # finish --> process
-        self.controller.current_process = self.controller.prepare_process
+        if len(self.cue)==0:
+            self.controller.end = True
+        elif len(self.cue) % self.trialNUM_eachblock == 0:
+            self.controller.current_process = self.controller.rest_process
+        else:
+            self.controller.current_process = self.controller.prepare_process
         
         return
 
     def run(self):
+        self.change()
         # 这里应该显示结果，如果是离线的话不用做什么
         return

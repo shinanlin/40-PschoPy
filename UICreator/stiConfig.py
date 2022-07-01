@@ -5,11 +5,11 @@ import string
 class stiConfig():
     def __init__(self):
         
-        self.paradigm = 'ssvep'
+        self.paradigm = 'wn'
         self.saveAdd = 'picFolder'
         
         self.refreshRate = 60
-        self.stiLEN = 0.5
+        self.stiLEN = 1
         self.resolution=(1920,1080)
         self.layout = (5,8)
         self.cubicSize = 140

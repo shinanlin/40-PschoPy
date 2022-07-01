@@ -6,6 +6,11 @@ import os
 import pickle
 import matplotlib
 from tqdm import tqdm
+import os
+import sys
+import scipy.io as scio
+
+
 matplotlib.use('agg')
     
 class frameLoader():
@@ -60,6 +65,7 @@ class UIFactory:
         self.interval = config.interval
         self.initWidth = config.initWidth
         self.initHeight = config.initHeight
+        self.paradigm = config.paradigm
 
         self.saveFolder = os.path.join(os.getcwd(), config.saveAdd, config.paradigm)
         if os.path.exists(self.saveFolder) is False:
@@ -74,6 +80,11 @@ class UIFactory:
         stimulation_phase_set = np.array(self.phase).reshape(
             (self.rowNUM, self.columnNUM), order='F')
 
+        
+        cwd=sys.path[0]
+        file=os.path.join(cwd,'UICreator','WN_60Hz.mat')
+        stim=scio.loadmat(file)['WN']
+        
         rectSet = []
         # 刺激大小
         for rowINX, (freRow, phaseRow) in enumerate(zip(stimulation_frequency_set, stimulation_phase_set)):
@@ -82,8 +93,12 @@ class UIFactory:
                 target_site_point = [(colINX*(self.cubicSize+self.interval)+self.initWidth), ((
                     self.rowNUM-rowINX-1)*(self.cubicSize+self.interval)+self.initHeight)]
 
-                rectSet.append(StimTargetRect(target_site_point, self.cubicSize, self.refreshRate,freq, phase, 255))
-
+                stim_each_rect=stim[:, rowINX*self.columnNUM+colINX]
+                
+                
+                rectSet.append(StimTargetRect(stim_each_rect, target_site_point, self.cubicSize, self.refreshRate,freq, phase, 255))
+                
+                
 
         frameSet = []
 
@@ -106,7 +121,7 @@ class UIFactory:
                 if N == 0:
                     brightness = 1
                 else:
-                    brightness = rect.cal_brightness(N)
+                    brightness = rect.cal_brightness(N,self.paradigm)
                 x_loc = rect.site_point[0] / self.x_resolution
                 y_loc = rect.site_point[1] / self.y_resolution
                 x_size = rect.rect_size / self.x_resolution

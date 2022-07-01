@@ -3,7 +3,8 @@ import math
 
 
 class StimTargetRect():
-    def __init__(self, site_point, rect_size, fs, frequency, start_phase, max_amplitude):
+    def __init__(self, stim_each_rect, site_point, rect_size, fs, frequency, start_phase, max_amplitude):
+        self.stim_each_rect=stim_each_rect
         self.site_point = site_point
         self.rect_size = rect_size
         self.fs = fs
@@ -13,8 +14,16 @@ class StimTargetRect():
         self.form_flag_matrix = np.ones(rect_size, dtype = 'bool')
         self.position = self.covert2psycho()
         
-    def cal_brightness(self, frame_no):
-        brightness = 0.5 + 0.5 * math.cos( 2 * math.pi * self.frequency /self.fs * frame_no + self.start_phase )
+    def cal_brightness(self, frame_no, paradigm):
+        
+        # for wn
+        if paradigm == 'wn':
+            brightness=self.stim_each_rect[frame_no-1]
+        
+        # for ssvep
+        elif paradigm == 'ssvep':
+            brightness = 0.5 + 0.5 * math.cos( 2 * math.pi * self.frequency /self.fs * frame_no + self.start_phase )
+        
         return brightness
 
     def covert2psycho(self):

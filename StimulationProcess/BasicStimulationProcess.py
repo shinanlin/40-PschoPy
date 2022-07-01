@@ -16,13 +16,15 @@ class BasicStimulationProcess:
         self.w = view_struct.w
 
         self.initFrame = view_struct.initFrame
-        self.frameSet = view_struct.frameSet
+        self.frameSet = view_struct.frameSet        #所有帧的图片list
 
         self.historyString = None
         self.cue = view_struct.cue
         self.targetPos = view_struct.targetPos
         self.stringPos = view_struct.stringPos
-
+        self.stim_info = view_struct.stim_info
+        self.targetNUM = view_struct.targetNUM
+        self.trialNUM_eachblock = view_struct.trialNUM_eachblock
         self.eventController = None
 
         pass
