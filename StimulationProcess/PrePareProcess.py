@@ -14,6 +14,7 @@ class PrepareProcess(BasicStimulationProcess):
     def change(self):
 
         # prepare --> stimulate
+        time.sleep(2)
         self.controller.currentProcess = self.controller.stimulateProcess
 
     def run(self):
