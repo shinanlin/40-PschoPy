@@ -33,9 +33,12 @@ class FinishProcess(BasicStimulationProcess):
         
     def run(self):
 
-        self._showFeedback()
+        # self._showFeedback()
+        
+        self.w.flip()
+        self.initFrame.draw()
+        self.w.flip()
         time.sleep(1)
-        self.change()
 
         pass
 
@@ -48,14 +51,14 @@ class FinishProcess(BasicStimulationProcess):
         
         histroString = self.historyString  
         feedbackText = ''.join(histroString)
+
         feedbackText = ' >>'+feedbackText
 
         feedback = self.drawDialogue(feedbackText,color='black',fillColor=None)
         feedback.draw()
 
         # result in this epoch
-        commandId = self.commandID[self.controller.currentResult]
-        resultChar = self.targetTable[commandId]
+        resultChar = self.targetTable[self.controller.currentResult]
         resultChar = '%s'%(resultChar)
         placeholder = [' ' for _ in range(epochINX-1)]
         placeholder = ''.join(placeholder)
