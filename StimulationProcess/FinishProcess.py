@@ -2,6 +2,7 @@ from os.path import join
 from StimulationProcess.BasicStimulationProcess import BasicStimulationProcess
 from psychopy.visual.rect import Rect
 import time
+import numpy as np
 from psychopy import visual, core, event
 from psychopy.tools.monitorunittools import posToPix,cm2pix
 
@@ -13,8 +14,9 @@ class FinishProcess(BasicStimulationProcess):
 
     def update(self):
 
-        self.currentReport = self.controller.currentResult
-        self.historyString.append(self.targetTable['DISPLAYCHAR'][self.currentReport])
+        # self.currentReport = self.controller.currentResult
+        self.currentReport = np.random.randint(20,size=1)[0]
+        self.controller.historyString.append(self.char[self.currentReport])
         
 
 
@@ -25,7 +27,7 @@ class FinishProcess(BasicStimulationProcess):
         
         if self.controller.endBlock:
             self.controller.currentProcess = self.controller.idleProcess
-            self.historyString = []
+            self.controller.historyString = []
         else:
             self.controller.currentProcess = self.controller.prepareProcess
 
@@ -33,11 +35,10 @@ class FinishProcess(BasicStimulationProcess):
         
     def run(self):
 
-        # self._showFeedback()
-        
-        self.w.flip()
-        self.initFrame.draw()
-        self.w.flip()
+        # self.update()
+        self.currentReport = 0
+        self._showFeedback()
+        self.controller.historyString.append(self.char[self.currentReport])
         time.sleep(1)
 
         pass
@@ -49,27 +50,28 @@ class FinishProcess(BasicStimulationProcess):
         
         epochINX = self.controller.epochThisBlock
         
-        histroString = self.historyString  
+        histroString = self.controller.historyString  
         feedbackText = ''.join(histroString)
 
         feedbackText = ' >>'+feedbackText
 
-        feedback = self.drawDialogue(feedbackText,color='black',fillColor=None)
-        feedback.draw()
+        feedback = self.drawDialogue(feedbackText,color='white',fillColor=None)
+        # feedback.draw()
 
         # result in this epoch
-        resultChar = self.targetTable[self.controller.currentResult]
+        resultChar = self.char[self.currentReport]
         resultChar = '%s'%(resultChar)
         placeholder = [' ' for _ in range(epochINX-1)]
         placeholder = ''.join(placeholder)
         resultText = '   '+placeholder+resultChar
 
         # correctness = 'red' if self.controller.blockCueText[epochINX] != self.targetTable[commandId] else 'green'
-        correctness = 'black'
+        correctness = 'red'
         result = self.drawDialogue(resultText, color=correctness,fillColor=None)
         result.draw()
         
-        self.historyString.append(resultChar)
+        feedback = self.drawDialogue(feedbackText+resultChar,color='green',fillColor=None)
+        # self.controller.historyString.append(resultChar)
         self.controller.feedback = feedback
         self.w.flip(False)
 

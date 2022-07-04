@@ -32,6 +32,7 @@ class viewContainer():
     def takeConfig(self,config):
 
         self.cue = config.cue
+        self.char = config.char
         self.targetNUM = config.targetNUM
         self.blockNUM = config.blockNUM
         self.displayChar = config.displayChar

@@ -1,6 +1,9 @@
 from StimulationProcess.BasicStimulationProcess import BasicStimulationProcess
 from psychopy import visual, core, event
 from EventController import EventController
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')
 import datetime
 from psychopy import logging
 
@@ -9,12 +12,12 @@ class StimulateProcess(BasicStimulationProcess):
         super().__init__()
         
     def update(self):
-        self.dialogue = self.controller.dialogue
         self.controller.endBlock = self._checkBlock()
 
         self.w.flip()
         self.initFrame.draw()
-        # self.dialogue.draw()
+        self.controller.feedback.draw()
+        self.controller.dialogue.draw()
 
         feedback = self.controller.feedback
         if feedback is not None:
@@ -42,9 +45,10 @@ class StimulateProcess(BasicStimulationProcess):
 
         # 这一步是为了记录每一帧的时间，用来检查是否掉帧
         frameINX = 0
+        self.w.flip(False)
 
         startTime = core.getTime()
-
+        self.w.recordFrameIntervals = True
         while frameINX < len(self.frameSet):
         
             # if frameINX == 0:
@@ -55,8 +59,16 @@ class StimulateProcess(BasicStimulationProcess):
             frameINX += 1
             # if frameINX == len(self.frameSet):
             #     frameINX = 0
+        f = plt.figure()
+        plt.plot(self.w.frameIntervals)
+        plt.ylim(0.0157,0.0177)
+        plt.savefig('FRAME.png')
 
+        self.w.frameIntervals = []
+        self.w.recordFrameIntervals = False
+        endTime = core.getTime()
         self.update()
+
         # self.eventController.clearEvent()
 
 

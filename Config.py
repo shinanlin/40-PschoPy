@@ -24,7 +24,7 @@ class Config():
         self.gender = gender
         pass
 
-    def displayINFO(self, refreshRate=60, stiLEN=3, resolution=(1920, 1080), layout=(5, 8), cubicSize=140, interval=50, trim=(225, 90), phase=np.tile(np.arange(0, 2, 0.5)*math.pi, 10), frequency=np.linspace(8.0, 15.8, 40), char=list(string.ascii_uppercase) + list(np.arange(10))+['.', ' ', ',', 'Del'],):
+    def displayINFO(self, refreshRate=60, stiLEN=3, resolution=(1920, 1080), layout=(5, 8), cubicSize=140, interval=50, trim=(225, 90), phase=np.tile(np.arange(0, 2, 0.5)*math.pi, 10), frequency=np.linspace(8.0, 15.8, 40), char=list(string.ascii_lowercase) + list(np.arange(10))+['.', ' ', ',', '?'],):
 
         self.refreshRate = refreshRate
         self.stiLEN = stiLEN
@@ -42,7 +42,7 @@ class Config():
         
         pass
 
-    def expINFO(self, COM='abcd', targetNUM=40, blockNUM=6, srate=250, winLEN=1, paradigm='ssvep', saveAdd='picFolder'):
+    def expINFO(self, COM='abcd', targetNUM=40, blockNUM=6, srate=250, winLEN=1, paradigm='ssvep', saveAdd='picFolder',texts='random'):
 
         
         self.paradigm=paradigm
@@ -53,18 +53,31 @@ class Config():
         self.srate = srate
         self.winLEN = winLEN
 
-        cueOrder = np.arange(0, targetNUM)
-        random.seed(253)
-        random.shuffle(cueOrder)
-        self.cue = np.tile(cueOrder, (blockNUM,1))
-        self.displayChar = [[' %s' % self.char[i] for i in cue] for cue in self.cue]
+        self.projectCue(texts)
 
+        
         pass
+    
+    def projectCue(self,texts):
+        if texts == 'random':
+            cueOrder = np.arange(0, self.targetNUM)
+            random.seed(253)
+            random.shuffle(cueOrder)
+            self.cue = np.tile(cueOrder, (self.blockNUM,1))
+            self.displayChar = [[' %s' % self.char[i] for i in cue] for cue in self.cue]
+        else:
+            self.cue = [[self.char.index(s) for s in text] for text in texts]
+            self.displayChar = texts
 
+        return
 
 
 
 if __name__=='__main__':
-    config = Config()
-
     
+    config = Config()
+    texts = ['am i in control? or it is just a delusion?',
+            'i am typing at by own will',
+            'helllo mr.robot,are you talking to me?']
+    config.expINFO(texts=texts)
+        

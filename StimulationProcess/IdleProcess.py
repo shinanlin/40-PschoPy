@@ -1,6 +1,5 @@
 import time
 from typing import Text
-from attr import s
 import numpy as np
 from StimulationProcess.BasicStimulationProcess import BasicStimulationProcess
 from psychopy import event, visual
@@ -30,7 +29,6 @@ class IdleProcess(BasicStimulationProcess):
     def _idleInterface(self):
         
         self.w.flip()
-        # self.baseFrameworkTexture.draw()
         if self.controller.currentBlockINX == 0:
             text = '实验即将开始，请保持平静，按空格键继续'
         else:
@@ -50,7 +48,7 @@ class IdleProcess(BasicStimulationProcess):
         self.controller.epochThisBlock = 0
         
         currentBlockINX = self.controller.currentBlockINX
-        self.controller.blockCues = self.cues[currentBlockINX].tolist()
+        self.controller.blockCues = self.cues[currentBlockINX]
         self.controller.blockCueText = self.cueText[currentBlockINX]
         text = ' >>'+''.join(self.cueText[currentBlockINX])
 
@@ -58,18 +56,17 @@ class IdleProcess(BasicStimulationProcess):
         self.controller.feedback = None
 
         self.initFrame.draw()
-        # self.controller.dialogue.draw()
+        self.controller.dialogue.draw()
 
         self.w.flip()
-
         self.controller.w = self.w
         self.controller.endBlock = False
+        self.controller.feedback = self.drawDialogue("",color='White',fillColor=None)
         return 
 
 
     def _openEyes(self):
         self.w.flip()
-        self.baseFrameworkTexture.draw()
 
         text = visual.TextStim(
             self.w, pos=[0, 0], text='请注释屏幕中央的标记，保持视线稳定',
