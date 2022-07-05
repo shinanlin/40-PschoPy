@@ -16,8 +16,9 @@ class StimulateProcess(BasicStimulationProcess):
 
         self.w.flip()
         self.initFrame.draw()
-        self.controller.feedback.draw()
         self.controller.dialogue.draw()
+        self.controller.feedback.draw()
+        
 
         feedback = self.controller.feedback
         if feedback is not None:
@@ -59,13 +60,14 @@ class StimulateProcess(BasicStimulationProcess):
             frameINX += 1
             # if frameINX == len(self.frameSet):
             #     frameINX = 0
-        f = plt.figure()
-        plt.plot(self.w.frameIntervals)
-        plt.ylim(0.0157,0.0177)
-        plt.savefig('FRAME.png')
 
-        self.w.frameIntervals = []
-        self.w.recordFrameIntervals = False
+        # f = plt.figure()
+        # plt.plot(self.w.frameIntervals)
+        # plt.ylim(0.0157,0.0177)
+        # plt.savefig('FRAME.png')
+
+        # self.w.frameIntervals = []
+        # self.w.recordFrameIntervals = False
         endTime = core.getTime()
         self.update()
 

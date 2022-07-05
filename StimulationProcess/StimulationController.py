@@ -19,7 +19,7 @@ class StimulationController:
         self.currentProcess = None
 
         # 显示界面
-        self.win = None
+        self.w = None
 
         self.endBlock = False
         self.endSession = None
@@ -30,6 +30,8 @@ class StimulationController:
         self.blockCues = None
         # 当前block提示字符
         self.blockCueText = None
+        # 当前block的mask
+        self.blockMask = None
         # 当前epoch的编号
         self.currentEpochINX = 0
         # 当前block内epoch的编号
@@ -40,6 +42,8 @@ class StimulationController:
         self.currentResult = None
         # 用户打字的字符框反馈
         self.feedback = None
+        self.maskFlag = False
+
         # 字符映射
 
 

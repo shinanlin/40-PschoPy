@@ -20,15 +20,16 @@ class BasicStimulationProcess:
         self.frameSet = viewContainer.frameSet
 
         self.controller.historyString = []
+        self.masks = viewContainer.masks
         self.char = viewContainer.char        
         self.targetPos = viewContainer.targetPos
         self.stringPos = viewContainer.stringPos
 
         self.cues = viewContainer.cue
         self.targetNUM = viewContainer.targetNUM
-        self.blockSize = self.targetNUM//2
         self.cueText = viewContainer.displayChar
         self.eventController = None
+        self.spaceNUM = 0
 
         pass
 
@@ -76,8 +77,9 @@ class BasicStimulationProcess:
         """
 
         self.initFrame.draw()
-        self.controller.feedback.draw()
         self.controller.dialogue.draw()
+        self.controller.feedback.draw()
+        
         
         
         # rect
@@ -86,12 +88,13 @@ class BasicStimulationProcess:
         rect.draw()
         self.w.flip()
 
-        time.sleep(1)
+        time.sleep(0.3)
 
         # circle
         self.initFrame.draw()
-        self.controller.feedback.draw()
         self.controller.dialogue.draw()
+        self.controller.feedback.draw()
+        
         
 
         # x, y = pos
@@ -103,7 +106,7 @@ class BasicStimulationProcess:
 
         # self.w.flip(False)
 
-        time.sleep(1)
+        time.sleep(0.3)
 
         return self.w
 

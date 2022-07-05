@@ -71,6 +71,14 @@ class Config():
 
         return
 
+    def maskCue(self,masks):
+        masked = []
+        for (display,mask) in zip(self.displayChar,masks):
+            for s in mask.split(','):
+                display = display.replace(s.split('-')[0],s.split('-')[-1])
+            masked.append(display)
+        self.masked = masked
+
 
 
 if __name__=='__main__':
@@ -79,5 +87,14 @@ if __name__=='__main__':
     texts = ['am i in control? or it is just a delusion?',
             'i am typing at by own will',
             'helllo mr.robot,are you talking to me?']
+
+
+        
+    masks = ['in-on,delusion-illusion',
+            'own-you',
+            'robot-tobor,talking-running',
+            'this-that']
+    
     config.expINFO(texts=texts)
+    config.maskCue(masks=masks)
         

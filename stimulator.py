@@ -37,6 +37,8 @@ class viewContainer():
         self.blockNUM = config.blockNUM
         self.displayChar = config.displayChar
         self.resolution = config.resolution
+        if config.masked is not None:
+            self.masks = config.masked
 
         pass
 

@@ -50,6 +50,7 @@ class IdleProcess(BasicStimulationProcess):
         currentBlockINX = self.controller.currentBlockINX
         self.controller.blockCues = self.cues[currentBlockINX]
         self.controller.blockCueText = self.cueText[currentBlockINX]
+        self.controller.blockMask = self.masks[currentBlockINX]
         text = ' >>'+''.join(self.cueText[currentBlockINX])
 
         self.controller.dialogue = self.drawDialogue(text,color='gray',fillColor='white')
