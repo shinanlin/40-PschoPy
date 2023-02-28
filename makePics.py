@@ -1,8 +1,9 @@
 from UICreator.stiConfig import stiConfig
 from UICreator.UIFactory import UIFactory
 
-config = stiConfig()
-factory = UIFactory(config)
-frames = factory.getFrames()
-factory.saveFrames(frames)
+for p in ['wn','ssvep']:
+    config = stiConfig(paradigm=p)
+    factory = UIFactory(config)
+    frames = factory.getFrames()
+    factory.saveFrames(frames)
 

@@ -7,7 +7,6 @@ class PrepareProcess(BasicStimulationProcess):
     def __init__(self) -> None:
         super().__init__()
 
-
         
     def update(self):
         self.controller.cue_id=self.cue.pop(0)
@@ -28,36 +27,34 @@ class PrepareProcess(BasicStimulationProcess):
 
     def _showCue(self,id):
         #绘制初始帧
-        self.w.flip(False)
+        # self.w.flip(False)
         self.initFrame.draw()
         
         #绘制识别结果提示框
         stimTargetRectCell = self.targetPos
-        pos=stimTargetRectCell[id].position
+        pos=stimTargetRectCell[id % 40].position
         
-        resultRect=Rect(win=self.w,pos=pos,width=145,height=145,units='pix',lineWidth=5)
-        resultRect.lineColorSpace = 'rgb255'      
-        resultRect.lineColor = (255, 0, 0)
-        resultRect.fillColor = None
-        resultRect.opacity = 0.9
+        resultRect=Rect(win=self.w,pos=pos,width=140,height=140,units='pix', fillColor='Red')
         resultRect.draw()
         
         self.w.flip()
 
-        time.sleep(1.5)
-
-        self.initFrame.draw()
+        time.sleep(0.5)
+        # self.initFrame.draw()
         
         x,y = pos
         y = y-90
-        circle = Circle(win=self.w,pos=[x,y],radius=4)
-        circle.colorSpace = 'rgb255'
-        circle.color = (255,0,0)
+        circle = Circle(win=self.w,pos=[x,y],radius=4, fillColor='Red', units='pix')
         circle.draw()
+        self.initFrame.draw()
         
-
-        self.w.flip()
-        time.sleep(1)
+        self.w.flip(False)
+        time.sleep(0.2)
+        
+        circle.draw()
+        self.initFrame.draw()
+        self.w.flip(False)
+        time.sleep(0.3)
         
         
         return self.w

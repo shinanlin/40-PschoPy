@@ -31,6 +31,9 @@ class viewContainer():
         self.targetNUM = None
         self.droppedframes = None
         self.trialNUM_eachblock = None
+        self.stiLEN = None
+        self.refreshRate = None
+        self.blockNUM = None
         pass
 
 
@@ -46,6 +49,9 @@ class Stimulator():
         self.viewContainer.targetNUM = exp_info.targetNUM
         self.viewContainer.cue = exp_info.cue_info
         self.viewContainer.trialNUM_eachblock = exp_info.trialNUM_eachblock
+        self.viewContainer.stiLEN = exp_info.stiLEN
+        self.viewContainer.refreshRate = exp_info.refreshRate
+        self.viewContainer.blockNUM = exp_info.blockNUM
         
         # controller 用来控制刺激呈现
 

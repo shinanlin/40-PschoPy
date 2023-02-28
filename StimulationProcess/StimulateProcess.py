@@ -14,18 +14,20 @@ class StimulateProcess(BasicStimulationProcess):
         
     def change(self):
         # stimulate --> finish
+        self.initFrame.draw()
+        self.w.flip()
+        self.initFrame.draw()
+        self.w.flip()
+        
         self.controller.current_process = self.controller.finish_process
         self.controller.currenttrialINX += 1
-        # self.eventController.sendEvent(251)
 
 
     def run(self):
         
-        self.w.flip()
         # 发送trigger
-        # self.eventController = EventController()
-        # self.eventController.sendEvent(self.controller.cue_id+1)
-
+        self.eventController = EventController()
+        self.eventController.clearEvent()
         # 这一步是为了记录每一帧的时间，用来检查是否掉帧
         self.w.recordFrameIntervals = True
         self.w.refreshThreshold = 0.001+1/60
@@ -33,12 +35,10 @@ class StimulateProcess(BasicStimulationProcess):
 
         inx = 0
         lastdroppedframes=self.w.nDroppedFrames
-        while inx<len(self.frameSet):
-            # if inx==1:
-            #     if self.stim_info == 'wn':
-            #         self.eventController.sendEvent(self.controller.cue_id+1)
-            #     else:
-            #         self.eventController.sendEvent(self.controller.cue_id+1+self.targetNUM)
+        while inx < self.stiLEN*self.refreshRate:
+            if inx == 1:
+                self.eventController.sendEvent(self.controller.cue_id+1)
+
             self.frameSet[inx].draw()
             self.w.flip(False)
             inx += 1
@@ -48,24 +48,9 @@ class StimulateProcess(BasicStimulationProcess):
         print('Overall trial dropped %i frames'%self.w.nDroppedFrames)
         self.w.frameIntervals = []
         self.w.recordFrameIntervals = False
-        # self.eventController.clearEvent()
+        self.eventController.clearEvent()
         
         self.change()
 
-
-
-
-    def check_key_board(self):
-        for i in event.getKeys():
-            if i == 'escape':
-                self.w.close()
-                core.quit()
-                raise Exception("SSVEPExperiment: UserInterrupt", '用户中断实验')
-                
-            elif i == 'delete':
-                #message = ToOperationSendingExchangeMessage.ClearResultOperation
-                print('\nStimulateProcess发送清空结果显示指令，执行时间{}\n'.format(datetime.datetime.now()))
-
-    
     def getdroppedframes(self,dframes):
         self.droppedframes.append(dframes)

@@ -25,13 +25,11 @@ class InitialProcess(BasicStimulationProcess):
         event.waitKeys(keyList=['space'])
         self._openEyes()
         # self._closeEyes()
-        #time.sleep(3)
         self.change()
 
 
     def _openEyes(self):
         self.w.flip()
-
 
         text = visual.TextStim(
             self.w, pos=[0, 0], text='请注释屏幕中央的标记，保持视线稳定',
@@ -42,7 +40,6 @@ class InitialProcess(BasicStimulationProcess):
 
         time.sleep(3)
         
-        
         cross = visual.ShapeStim(
             win=self.w, name='polygon', vertices='cross',
             size=(50, 50),
@@ -52,4 +49,5 @@ class InitialProcess(BasicStimulationProcess):
 
         cross.draw()
         self.w.flip()
-        time.sleep(5)
+        time.sleep(3)
+        self.w.flip()

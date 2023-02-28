@@ -13,6 +13,7 @@ class FinishProcess(BasicStimulationProcess):
     def change(self):
          
         # finish --> process
+        time.sleep(0.5)
         if len(self.cue)==0:
             self.controller.end = True
         elif len(self.cue) % self.trialNUM_eachblock == 0:

@@ -74,38 +74,63 @@ class UIFactory:
         
     
     def getFrames(self):
-
+        # for ssvep:
+        # if self.paradigm == 'ssvep':
         stimulation_frequency_set = np.array(
-            self.frequency).reshape((self.rowNUM, self.columnNUM), order='F')
+            self.frequency).reshape((self.rowNUM, self.columnNUM), order='F').T
         stimulation_phase_set = np.array(self.phase).reshape(
-            (self.rowNUM, self.columnNUM), order='F')
+            (self.rowNUM, self.columnNUM), order='F').T
 
-        
-        cwd=sys.path[0]
-        file=os.path.join(cwd,'UICreator','WN_60Hz.mat')
-        stim=scio.loadmat(file)['WN']
         
         rectSet = []
-        # 刺激大小
-        for rowINX, (freRow, phaseRow) in enumerate(zip(stimulation_frequency_set, stimulation_phase_set)):
-            for colINX, (freq, phase) in enumerate(zip(freRow, phaseRow)):
-                # 左下角
+    # 刺激大小
+        for colINX, (frecol, phasecol) in enumerate(zip(stimulation_frequency_set, stimulation_phase_set)):
+            for rowINX, (freq, phase) in enumerate(zip(frecol, phasecol)):
+            # 左下角
                 target_site_point = [(colINX*(self.cubicSize+self.interval)+self.initWidth), ((
                     self.rowNUM-rowINX-1)*(self.cubicSize+self.interval)+self.initHeight)]
 
-                stim_each_rect=stim[:, rowINX*self.columnNUM+colINX]
+                # stim_each_rect=stim[:, rowINX*self.columnNUM+colINX]
+                rectINX = colINX*self.rowNUM+rowINX
+                # rectINX = rowINX*self.columnNUM+colINX
+            
+            
+                rectSet.append(StimTargetRect(rectINX, target_site_point, self.cubicSize, self.refreshRate,freq, phase, 255))
                 
+             
+             
+        # # for wn:
+        # else:
+        #     cwd=sys.path[0]
+        #     if self.paradigm == 'wn':
+        #         file=os.path.join(cwd,'UICreator','WN_60Hz.mat')
+        #         stim=scio.loadmat(file)['WN']
+        #     elif self.paradigm == 'wn_shift':
+        #         file=os.path.join(cwd,'UICreator','WN_shift.mat')
+        #         stim=scio.loadmat(file)['WN']
+        #     elif self.paradigm == 'wn_784targets':
+        #         file=os.path.join(cwd,'UICreator','WN_784targets.mat')
+        #         stim=scio.loadmat(file)['WN']   
+        #     elif self.paradigm == 'wn_highfreq':
+        #         file=os.path.join(cwd,'UICreator','WN_120Hz.mat')
+        #         stim=scio.loadmat(file)['WN']   
                 
-                rectSet.append(StimTargetRect(stim_each_rect, target_site_point, self.cubicSize, self.refreshRate,freq, phase, 255))
+
+        #     rectSet = []
+        #     for rowINX in np.arange(self.rowNUM):
+        #         for colINX in np.arange(self.columnNUM):
+        #             target_site_point = [(colINX*(self.cubicSize+self.interval)+self.initWidth), ((
+        #                 self.rowNUM-rowINX-1)*(self.cubicSize+self.interval)+self.initHeight)]
+        #             stim_each_rect=stim[:, rowINX*self.columnNUM+colINX]
                 
-                
+        #             rectSet.append(StimTargetRectwn(stim_each_rect, target_site_point, self.cubicSize, self.refreshRate, 255))
 
         frameSet = []
 
         for N in tqdm(range(self.maxFrames+1)):
             # 从此循环进入每一帧
 
-            f = plt.figure(figsize=(19.20, 10.80), facecolor='k', dpi=100)
+            f = plt.figure(figsize=(19.20, 10.80), facecolor='none', dpi=100)
             plt.xlim(0, 1)
             plt.ylim(0, 1)
             plt.gca().xaxis.set_major_locator(plt.NullLocator())
@@ -116,8 +141,9 @@ class UIFactory:
             plt.rcParams['axes.unicode_minus'] = False  # 这两行需要手动设置
             current_axis = plt.gca()
 
+            # if self.paradigm != 'wn_784targets':
             for rect,char in zip(rectSet,self.charSet):
-                # 每一帧的每一个目标
+            # 每一帧的每一个目标
                 if N == 0:
                     brightness = 1
                 else:
@@ -127,20 +153,38 @@ class UIFactory:
                 x_size = rect.rect_size / self.x_resolution
                 y_size = rect.rect_size / self.y_resolution
 
-                # 画一个正方形
+            # 画一个正方形
                 target = patches.Rectangle((x_loc,y_loc),
-                                         x_size,y_size,
-                                         linewidth=1, facecolor=[brightness, brightness, brightness])
-                # 写上字
+                                        x_size,y_size,
+                                        linewidth=1, facecolor=[brightness, brightness, brightness])
+            # 写上字
                 v = plt.text(x_loc + x_size / 2,
-                             y_loc + y_size / 2, char,
-                             fontsize=30, horizontalalignment='center', verticalalignment='center')
+                            y_loc + y_size / 2, char,
+                            fontsize=30, horizontalalignment='center', verticalalignment='center')
                 current_axis.add_patch(target)
+
+            # else:
+            #     for rect in rectSet:
+            #     # 每一帧的每一个目标
+            #         if N == 0:
+            #             brightness = 1
+            #         else:
+            #             brightness = rect.cal_brightness(N,self.paradigm)
+            #         x_loc = rect.site_point[0] / self.x_resolution
+            #         y_loc = rect.site_point[1] / self.y_resolution
+            #         x_size = rect.rect_size / self.x_resolution
+            #         y_size = rect.rect_size / self.y_resolution
+
+            #     # 画一个正方形
+            #         target = patches.Rectangle((x_loc,y_loc),
+            #                              x_size,y_size,
+            #                              linewidth=1, facecolor=[brightness, brightness, brightness])
+                    # current_axis.add_patch(target)
 
             plt.axis('off')
             frameSet.append(fig2data(f))
             plt.close(f)
-
+        
         
         frames = frameLoader()
         frames.initFrame = frameSet.pop(0)

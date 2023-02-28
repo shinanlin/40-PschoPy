@@ -1,8 +1,9 @@
 import pickle
 import os
 
-subname='diode'
-file = os.path.join(os.getcwd(), 'ExperimentInformation', subname, 'expinfo.pickle')
+subname='1'
+stim_info='wn'
+file = os.path.join(os.getcwd(), 'ExperimentInformation', subname, stim_info, 'expinfo.pickle')
 res=open(file,'rb')
 info=pickle.load(res)
 print(info)

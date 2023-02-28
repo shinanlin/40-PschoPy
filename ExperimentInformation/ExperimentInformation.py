@@ -7,8 +7,8 @@ import sys
 import pickle
 
 class ExperimentInformation(stiConfig):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,paradigm):
+        super().__init__(paradigm=paradigm)
         #被试姓名
         self.subname = None
         #刺激信息wn/ssvep
@@ -23,18 +23,24 @@ class ExperimentInformation(stiConfig):
         self.targetNUM = self.rowNUM * self.columnNUM
         self.saveFolder = None
         self.addSTI = None
-        self.trialNUM_eachblock = 8
+        self.trialNUM_eachblock = None
+        self.stiLEN = None
+        self.paradigm = paradigm
 
     def getcue(self):
-        # cueOrder=np.arange(0,self.targetNUM)
-        # random.shuffle(cueOrder)
-        cueOrder=0
-        self.cue_info=np.tile(cueOrder,self.targetNUM).tolist()
+        random.seed(1)
+        if self.paradigm == 'wn':
+            cueOrder=np.arange(0,self.targetNUM)
+        else:
+            cueOrder=np.arange(self.targetNUM,2*self.targetNUM)
+        random.shuffle(cueOrder)
+        # cueOrder=0
+        self.cue_info=np.tile(cueOrder,self.blockNUM).tolist()
         return self.cue_info
         
     def tofile(self):
         d={'subname' : self.subname, 'stim_info': self.stim_info, 'blockNUM': self.blockNUM, 'cue_info': self.cue_info, 'droppedframes': self.droppedframes}
-        self.saveFolder = os.path.join(os.getcwd(), 'ExperimentInformation', self.subname)
+        self.saveFolder = os.path.join(os.getcwd(), 'ExperimentInformation', self.subname, self.stim_info)
         if os.path.exists(self.saveFolder) is False:
             os.makedirs(self.saveFolder)
         with open(self.saveFolder+os.sep+'expinfo.pickle', "wb+") as fp:

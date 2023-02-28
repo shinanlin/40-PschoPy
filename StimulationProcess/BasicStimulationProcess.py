@@ -25,6 +25,9 @@ class BasicStimulationProcess:
         self.stim_info = view_struct.stim_info
         self.targetNUM = view_struct.targetNUM
         self.trialNUM_eachblock = view_struct.trialNUM_eachblock
+        self.stiLEN = view_struct.stiLEN
+        self.refreshRate = view_struct.refreshRate
+        self.blockNUM = view_struct.blockNUM
         self.eventController = None
 
         pass
